@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
-import { IUser } from "../types/index";
+import { UserTypes } from "../types/index";
 
-const UserSchema = new Schema<IUser>(
+const UserSchema = new Schema<UserTypes>(
   {
     name: { type: String, required: true },
     email: { type: String, required: true, unique: true },
@@ -15,4 +15,4 @@ const UserSchema = new Schema<IUser>(
   }
 );
 
-export const User = mongoose.model<IUser>("User", UserSchema);
+export const User = mongoose.model<UserTypes>("User", UserSchema);

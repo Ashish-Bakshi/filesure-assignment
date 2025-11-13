@@ -2,9 +2,9 @@ import { Document, Types } from 'mongoose'
 
 export type ObjectId = Types.ObjectId
 
-export interface IUser extends Document {
+export interface UserTypes extends Document {
   email: string
-  passwordHash?: string
+  password?: string
   name?: string
   referralCode: string
   credits: number
