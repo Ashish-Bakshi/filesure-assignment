@@ -1,6 +1,7 @@
 import express from 'express';
 import dotenv from 'dotenv'
 import cors from 'cors';
+import connectDB from './lib/db';
 
 dotenv.config();
 
@@ -12,6 +13,16 @@ app.use(express.json());
 
 app.get('/api/health', (_req, res) => res.json({ ok: true }))
 
-app.listen(PORT, () => {
-    console.log(`Server is running on port ${PORT}`);
-});
+const startServer = async () => {
+  try {
+    await connectDB();
+    app.listen(PORT, () => {
+      console.log(`Server running at port ${PORT}`);
+    });
+  } catch (error) {
+    console.error("Failed to start server:", error);
+    process.exit(1); // shut down server if DB connection fails
+  }
+};
+
+startServer();
