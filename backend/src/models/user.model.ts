@@ -7,6 +7,7 @@ const UserSchema = new Schema<UserTypes>(
     email: { type: String, required: true, unique: true },
     password: { type: String, required: true },
     referralCode: { type: String, required: true, unique: true },
+    referredBy: { type: Schema.Types.ObjectId, ref: "User", default: null },
     credits: { type: Number, default: 0 },
     firstPurchaseCompleted: { type: Boolean, default: false },
   },

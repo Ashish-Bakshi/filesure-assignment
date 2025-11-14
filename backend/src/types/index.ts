@@ -7,6 +7,7 @@ export interface UserTypes extends Document {
   password?: string
   name?: string
   referralCode: string
+  referredBy?: ObjectId | null
   credits: number
   firstPurchaseCompleted: boolean
 }

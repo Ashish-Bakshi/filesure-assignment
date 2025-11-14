@@ -4,6 +4,7 @@ import Referral from "../models/referral.model";
 import { generateReferralCode } from "../utils/generateReferralCode";
 import bcrypt from "bcryptjs";
 import { generateToken } from "../utils/generateToken";
+import jwt from "jsonwebtoken";
 
 export const registerHandler = async (req: Request, res: Response) => {
   try {
@@ -25,25 +26,23 @@ export const registerHandler = async (req: Request, res: Response) => {
 
     const hashedPassword = await bcrypt.hash(password, 10);
     const newReferralCode = generateReferralCode();
+    
+    let referrer = null;
 
+    if (referrerCode) {
+      referrer = await User.findOne({ referralCode: referrerCode });
+    }
+
+    console.log("Referrer found:", referrer);
     const newUser = await User.create({
       name,
       email,
       password: hashedPassword,
       referralCode: newReferralCode,
-      referredBy: referrerCode || null,
+      referredBy: referrer || null,
     });
 
-    if (!newUser) {
-      return res.status(500).json({
-        message: "Failed to create user",
-      });
-    }
-
-    if (referrerCode) {
-      const referrer = await User.findOne({ referralCode: referrerCode });
-
-      if (!referrer) {
+    if (!referrer) {
         console.log("❌ Invalid referral code:", referrerCode);
       } else {
         console.log("✅ Referral matched:", referrer._id);
@@ -54,6 +53,11 @@ export const registerHandler = async (req: Request, res: Response) => {
           status: "pending",
         });
       }
+
+      if (!newUser) {
+      return res.status(500).json({
+        message: "Failed to create user",
+      });
     }
 
     res.status(201).json({
@@ -65,6 +69,7 @@ export const registerHandler = async (req: Request, res: Response) => {
         name: newUser.name,
         email: newUser.email,
         referralCode: newUser.referralCode,
+        referredBy: referrer ? referrer._id : null,
       },
     });
   } catch (error) {
@@ -115,3 +120,42 @@ export const loginHandler = async (req: Request, res: Response) => {
     res.status(500).json({ message: "Internal server error", error: error });
   }
 }
+
+const logoutHandler = async (req: Request, res: Response) => {
+    res.cookie('accessToken', '', {
+        httpOnly: true,
+        expires: new Date(0),
+    });
+    res.cookie('refreshToken', '', {
+        httpOnly: true,
+        expires: new Date(0),
+    });
+    res.status(200).json({ message: 'Logged out successfully' });
+};
+
+export const refreshAccessToken = async (req: Request, res: Response) => {
+    const refreshToken = req.cookies.refreshToken;
+
+    if (!refreshToken) {
+        res.status(401);
+        throw new Error('Not authorized, no refresh token');
+    }
+
+    try {
+        const decoded = jwt.verify(refreshToken, process.env.JWT_REFRESH_SECRET as string) as any;
+        const user = await User.findById(decoded.userId).select('-password');
+
+        if (!user) {
+            res.status(401);
+            throw new Error('User not found, authorization denied');
+        }
+
+        // --- FIX: Pass a plain object as the payload ---
+        generateToken(res, { userId: user._id }, 'access');
+        res.status(200).json({ message: 'Access token refreshed successfully' });
+
+    } catch (error) {
+        res.status(401);
+        throw new Error('Not authorized, token failed or expired');
+    }
+};
