@@ -3,6 +3,7 @@ import User from "../models/user.model";
 import Referral from "../models/referral.model";
 import { generateReferralCode } from "../utils/generateReferralCode";
 import bcrypt from "bcryptjs";
+import { generateToken } from "../utils/generateToken";
 
 export const registerHandler = async (req: Request, res: Response) => {
   try {
@@ -70,3 +71,47 @@ export const registerHandler = async (req: Request, res: Response) => {
     res.status(500).json({ "Server Error": error });
   }
 };
+
+
+export const loginHandler = async (req: Request, res: Response) => {
+  try {
+    const { email, password } = req.body;
+    if (!email || !password) {
+      return res.status(400).json({ message: "email and password required" });
+    }
+
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+    
+    if (!user.password) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+    
+    const isPasswordValid = await bcrypt.compare(password, user.password);
+    
+    if (!isPasswordValid) {
+      return res.status(400).json({ message: "Invalid email or password" });
+    }
+
+    const payload = { userId: user._id, email: user.email };
+    generateToken(res, payload, "access");
+    generateToken(res, payload, "refresh");
+    
+    return res.status(200).json({
+      status: "success",
+      message: "Login successful",
+      data: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        referralCode: user.referralCode,
+      },
+    });
+  } catch (error) {
+    console.log("Login error:", error);
+    res.status(500).json({ message: "Internal server error", error: error });
+  }
+}
