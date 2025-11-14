@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
-import { User } from "../models/User.model";
+import User from "../models/User.model";
+import Referral from "../models/Referral.model";
 import { generateReferralCode } from "../utils/generateReferralCode";
 import bcrypt from "bcryptjs";
 
@@ -38,6 +39,17 @@ export const registerHandler = async (req: Request, res: Response) => {
             message : "Failed to create user" 
         }
     );
+    }
+
+    if (referralCode) {
+      const referrer = await User.findOne({ referralCode })
+      if (referrer) {
+        await Referral.create({
+          referrerId: referrer._id,
+          referredId: newUser._id,
+          status: 'pending'
+        })
+      }
     }
 
     res.status(201).json({
