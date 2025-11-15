@@ -92,17 +92,6 @@ export default function DashboardClient({ user }: { user: any }) {
   return (
     <div className="p-8 space-y-10 max-w-4xl mx-auto">
 
-      {/* HEADER */}
-      <div className="flex justify-between items-center">
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-
-        <button
-          onClick={handleLogout}
-          className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
-        >
-          Logout
-        </button>
-      </div>
 
       {/* PURCHASE CARD */}
       <div className="p-6 bg-white rounded-xl shadow space-y-3">
@@ -113,7 +102,7 @@ export default function DashboardClient({ user }: { user: any }) {
 
         <button
           onClick={handlePurchase}
-          className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
+          className="bg-black text-white px-4 py-2 rounded cursor-pointer hover:bg-gray-800"
         >
           Buy Product (₹10)
         </button>
@@ -131,7 +120,7 @@ export default function DashboardClient({ user }: { user: any }) {
           />
           <button
             onClick={copyReferralLink}
-            className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800"
+            className="bg-black text-white px-4 py-2 rounded cursor-pointer hover:bg-gray-800"
           >
             Copy
           </button>
