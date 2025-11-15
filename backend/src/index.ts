@@ -11,11 +11,16 @@ dotenv.config();
 
 const app = express();
 const PORT = process.env.PORT || 5000;
-
+const CLIENT_URL = process.env.CLIENT_URL;
 app.use(cors({
-  origin: process.env.CLIENT_URL,
+  origin: CLIENT_URL,
   credentials: true,
+  methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],
+  allowedHeaders: ["Content-Type", "Authorization"],
 }));
+
+
+
 
 app.use(cookieParser());
 app.use(express.json());

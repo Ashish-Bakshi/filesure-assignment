@@ -14,7 +14,7 @@ export async function requireUser() {
   }
 
   // Validate token via backend
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/auth/me`, {
+  const res = await fetch(`${process.env.API_URL}/auth/me`, {
     method: "GET",
     credentials: "include",
     headers: {
