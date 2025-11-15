@@ -2,7 +2,11 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export async function requireUser() {
-  const cookieHeader = cookies().toString();
+  const cookieStore = await cookies();
+  const allCookies = cookieStore.getAll();
+  const cookieHeader = allCookies
+    .map((c) => `${c.name}=${c.value}`)
+    .join("; ");
   // const accessToken = cookieStore.get("accessToken");
 
   if (!cookieHeader.includes("accessToken")) {
