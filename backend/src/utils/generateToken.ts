@@ -1,7 +1,7 @@
 import jwt from "jsonwebtoken";
 import { Response } from "express";
 
-export const generateToken = (
+export const generateToken = async (
   res: Response,
   payload: object,
   type: "access" | "refresh"
@@ -29,7 +29,7 @@ export const generateToken = (
   res.cookie(cookieName, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV !== "development",
-    sameSite: "strict",
+    sameSite: "lax",
     maxAge: type === "access"
       ? 15 * 60 * 1000           // 15 minutes
       : 7 * 24 * 60 * 60 * 1000, // 7 days
