@@ -1,5 +1,6 @@
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
+import { motion } from "framer-motion";
 
 export default async function LandingPage() {
   const cookieStore = await cookies();
@@ -10,7 +11,11 @@ export default async function LandingPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-6">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4 }}
+      className="min-h-screen flex items-center justify-center bg-gray-100 px-6">
       <div className="text-center space-y-6 w-full max-w-xl">
 
         <h1 className="text-4xl md:text-5xl font-bold">
@@ -37,6 +42,6 @@ export default async function LandingPage() {
           </a>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }

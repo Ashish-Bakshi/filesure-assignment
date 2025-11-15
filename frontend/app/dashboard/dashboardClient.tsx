@@ -6,6 +6,8 @@ import { useAuth } from "@/store/useAuth";
 import { useEffect } from "react";
 import { logout } from "@/lib/logout";
 import { useToast } from "@/store/useToast";
+import { motion } from "framer-motion";
+
 
 export default function DashboardClient({ user }: { user: any }) {
   const router = useRouter();
@@ -94,7 +96,12 @@ export default function DashboardClient({ user }: { user: any }) {
 
 
       {/* PURCHASE CARD */}
-      <div className="p-6 bg-white rounded-xl shadow space-y-3">
+      <motion.div
+        initial={{ opacity: 0, y: 20, scale: 0.97 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.35 }}
+        className="p-6 bg-white rounded-xl shadow border space-y-3"
+      >
         <h2 className="text-xl font-semibold">Buy a Product</h2>
         <p className="text-gray-600">
           Simulate a product purchase. First purchase triggers referral rewards.
@@ -106,10 +113,15 @@ export default function DashboardClient({ user }: { user: any }) {
         >
           Buy Product (₹10)
         </button>
-      </div>
+      </motion.div>
 
       {/* REFERRAL LINK */}
-      <div className="p-6 bg-white rounded-xl shadow space-y-3">
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4, delay: 0.05 }}
+        className="p-6 bg-white rounded-xl shadow border space-y-4"
+      >
         <h2 className="text-xl font-semibold">Referral Link</h2>
 
         <div className="flex items-center gap-2">
@@ -130,60 +142,97 @@ export default function DashboardClient({ user }: { user: any }) {
           Your referral code:{" "}
           <span className="font-semibold">{referralCode}</span>
         </p>
-      </div>
+      </motion.div>
 
       {/* STAT CARDS */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-        <StatCard label="Total Referred" value={totalReferred} />
-        <StatCard label="Converted Users" value={convertedCount} />
-        <StatCard label="Pending Referrals" value={pendingCount} />
-        <StatCard label="Credits Earned" value={totalCredits} />
-      </div>
+      <motion.div
+        initial="hidden"
+        animate="visible"
+        variants={{
+          hidden: {},
+          visible: {
+            transition: {
+              staggerChildren: 0.08,
+            },
+          },
+        }}
+        className="grid grid-cols-2 md:grid-cols-4 gap-4"
+      >
+        {[
+          { label: "Total Referred", value: totalReferred },
+          { label: "Converted Users", value: convertedCount },
+          { label: "Pending Referrals", value: pendingCount },
+          { label: "Credits Earned", value: totalCredits },
+        ].map((stat, idx) => (
+          <motion.div
+            key={idx}
+            variants={{
+              hidden: { opacity: 0, y: 15 },
+              visible: { opacity: 1, y: 0 },
+            }}
+          >
+            <StatCard label={stat.label} value={stat.value} />
+          </motion.div>
+        ))}
+      </motion.div>
 
       {/* REFERRED USERS TABLE */}
-      <div className="p-6 bg-white rounded-xl shadow">
-        <h2 className="text-xl font-semibold mb-3">Referred Users</h2>
+      <motion.div
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.4 }}
+        className="p-6 bg-white rounded-xl shadow border mt-8"
+      >
+        <h2 className="text-xl font-semibold mb-4">Referred Users</h2>
 
         {referredUsers.length === 0 ? (
           <p className="text-gray-600">No referrals yet.</p>
         ) : (
-          <table className="w-full border text-left">
+          <table className="w-full border text-left rounded-lg overflow-hidden">
             <thead>
               <tr className="border-b bg-gray-100">
-                <th className="p-2">Name</th>
-                <th className="p-2">Email</th>
-                <th className="p-2">Status</th>
-                <th className="p-2">Credits</th>
+                <th className="p-3">Name</th>
+                <th className="p-3">Email</th>
+                <th className="p-3">Status</th>
+                <th className="p-3">Credits</th>
               </tr>
             </thead>
 
             <tbody>
-              {referredUsers.map((u: any) => (
-                <tr key={u.id} className="border-b">
-                  <td className="p-2">{u.name}</td>
-                  <td className="p-2">{u.email}</td>
+              {referredUsers.map((u: any, index: number) => (
+                <motion.tr
+                  key={u.id}
+                  initial={{ opacity: 0, y: 10 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.25, delay: index * 0.05 }}
+                  className="border-b hover:bg-gray-50"
+                >
+                  <td className="p-3">{u.name}</td>
+                  <td className="p-3">{u.email}</td>
 
-                  <td className="p-2">
+                  <td className="p-3">
                     <span
-                      className={
-                        u.referralStatus === "converted"
-                          ? "text-green-600"
+                      className={`
+                  px-2 py-1 text-xs font-medium rounded-full
+                  ${u.referralStatus === "converted"
+                          ? "bg-green-100 text-green-700"
                           : u.referralStatus === "pending"
-                          ? "text-yellow-600"
-                          : "text-gray-600"
-                      }
+                            ? "bg-yellow-100 text-yellow-700"
+                            : "bg-gray-100 text-gray-700"
+                        }
+                `}
                     >
                       {u.referralStatus}
                     </span>
                   </td>
 
-                  <td className="p-2">{u.credits}</td>
-                </tr>
+                  <td className="p-3">{u.credits}</td>
+                </motion.tr>
               ))}
             </tbody>
           </table>
         )}
-      </div>
+      </motion.div>
 
     </div>
   );

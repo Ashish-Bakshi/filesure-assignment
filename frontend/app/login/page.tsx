@@ -5,6 +5,7 @@ import { API } from "@/lib/api";
 import { useAuth } from "@/store/useAuth";
 import { useRouter } from "next/navigation";
 import { useToast } from "@/store/useToast";
+import { motion } from "framer-motion";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -32,7 +33,10 @@ export default function LoginPage() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
+    <motion.div
+      initial={{ opacity: 0, y: 25 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.45 }} className="min-h-screen flex items-center justify-center bg-gray-100">
       <div className="bg-white shadow p-6 rounded-xl w-full max-w-sm space-y-4">
         <h1 className="text-2xl font-semibold text-center">Login</h1>
 
@@ -66,6 +70,6 @@ export default function LoginPage() {
           <a href="/register" className="text-blue-600"> Register</a>
         </p>
       </div>
-    </div>
+    </motion.div>
   );
 }
