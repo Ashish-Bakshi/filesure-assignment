@@ -12,6 +12,9 @@ export async function requireUser() {
   if (!cookieHeader.includes("accessToken")) {
     redirect("/login");
   }
+  console.log("SSR cookies:", allCookies);
+  console.log("cookieHeader:", cookieHeader);
+  console.log("API_URL:", process.env.API_URL);
 
   // Validate token via backend
   const res = await fetch(`${process.env.API_URL}/auth/me`, {
