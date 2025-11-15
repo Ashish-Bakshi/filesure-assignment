@@ -1,4 +1,4 @@
-import jwt from "jsonwebtoken";
+import jwt, { Secret } from "jsonwebtoken";
 import { Response } from "express";
 
 export const generateToken = async (
@@ -6,19 +6,13 @@ export const generateToken = async (
   payload: object,
   type: "access" | "refresh"
 ) => {
-  let secret;
-  let expiresIn;
-  let cookieName;
-
-  if (type === "access") {
-    secret = process.env.JWT_ACCESS_SECRET as string;
-    expiresIn = "15m";
-    cookieName = "accessToken";
-  } else {
-    secret = process.env.JWT_REFRESH_SECRET as string;
-    expiresIn = "7d";
-    cookieName = "refreshToken";
-  }
+  let secret: Secret =
+    type === "access"
+      ? (process.env.JWT_ACCESS_SECRET as Secret)
+      : (process.env.JWT_REFRESH_SECRET as Secret);
+  
+  const expiresIn = type === "access" ? "15m" : "7d";
+  const cookieName = type === "access" ? "accessToken" : "refreshToken";
 
   if (!secret) {
     throw new Error(`JWT secret for ${type} token is missing`);
