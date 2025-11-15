@@ -5,9 +5,9 @@ import { redirect } from "next/navigation";
 
 export async function requireUser() {
   const cookieStore = await cookies();
-  const accessToken = cookieStore.get("accessToken");
+  const cookieHeader = cookieStore.toString();
 
-  if (!accessToken) {
+  if (!cookieHeader.includes("accessToken")) {
     redirect("/login");
   }
 
@@ -16,8 +16,9 @@ export async function requireUser() {
     method: "GET",
     credentials: "include",
     headers: {
-      Cookie: `accessToken=${accessToken.value}`,
+      Cookie: cookieHeader
     },
+    cache: "no-store",
   });
 
   if (!res.ok) {
