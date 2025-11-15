@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import connectDB from './lib/db';
 import authRoutes from './routes/auth.route';
 import purchaseRoutes from './routes/purchase.route';
+import dashboardRoutes from "./routes/dashboard.route";
 dotenv.config();
 
 const app = express();
@@ -20,6 +21,7 @@ app.use(express.json());
 
 app.use('/api/auth', authRoutes)
 app.use('/api/purchase', purchaseRoutes)
+app.use('/api/dashboard', dashboardRoutes)
 
 app.get('/api/health', (_req, res) => res.json({ ok: true }))
 
