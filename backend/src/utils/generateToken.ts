@@ -25,6 +25,7 @@ export const generateToken = async (
     secure: true,
     sameSite: "none",
     path: "/",
+    domain: ".onrender.com",
     maxAge: type === "access"
       ? 15 * 60 * 1000           // 15 minutes
       : 7 * 24 * 60 * 60 * 1000, // 7 days
