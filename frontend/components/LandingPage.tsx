@@ -38,4 +38,4 @@ const LandingPageClient = () => {
   )
 }
 
-export default LandingPage
+export default LandingPageClient
