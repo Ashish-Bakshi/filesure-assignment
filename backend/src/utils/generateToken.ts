@@ -22,8 +22,9 @@ export const generateToken = async (
 
   res.cookie(cookieName, token, {
     httpOnly: true,
-    secure: process.env.NODE_ENV !== "development",
-    sameSite: "lax",
+    secure: true,
+    sameSite: "none",
+    path: "/",
     maxAge: type === "access"
       ? 15 * 60 * 1000           // 15 minutes
       : 7 * 24 * 60 * 60 * 1000, // 7 days

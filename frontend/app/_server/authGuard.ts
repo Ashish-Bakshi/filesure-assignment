@@ -1,11 +1,9 @@
-'use server'
-
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
 export async function requireUser() {
-  const cookieStore = await cookies();
-  const cookieHeader = cookieStore.toString();
+  const cookieHeader = cookies().toString();
+  // const accessToken = cookieStore.get("accessToken");
 
   if (!cookieHeader.includes("accessToken")) {
     redirect("/login");
@@ -16,7 +14,7 @@ export async function requireUser() {
     method: "GET",
     credentials: "include",
     headers: {
-      Cookie: cookieHeader
+      Cookie: cookieHeader,
     },
     cache: "no-store",
   });
