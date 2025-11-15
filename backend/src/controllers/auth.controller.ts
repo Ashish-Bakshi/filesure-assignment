@@ -121,18 +121,19 @@ export const loginHandler = async (req: Request, res: Response) => {
   }
 }
 
-const logoutHandler = async (req: Request, res: Response) => {
-    res.cookie('accessToken', '', {
-        httpOnly: true,
-        expires: new Date(0),
-    });
-    res.cookie('refreshToken', '', {
-        httpOnly: true,
-        expires: new Date(0),
-    });
-    res.status(200).json({ message: 'Logged out successfully' });
-};
+export const logoutHandler = async (req: Request, res: Response) => {
+  try {
+    res.clearCookie("accessToken");
+    res.clearCookie("refreshToken");
 
+    return res.json({
+      ok: true,
+      message: "Logged out successfully",
+    });
+  } catch (err) {
+    return res.status(500).json({ error: "Server error" });
+  }
+};
 export const refreshAccessToken = async (req: Request, res: Response) => {
     const refreshToken = req.cookies.refreshToken;
 
