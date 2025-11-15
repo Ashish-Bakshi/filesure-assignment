@@ -4,9 +4,11 @@ import { useState } from "react";
 import { API } from "@/lib/api";
 import { useAuth } from "@/store/useAuth";
 import { useRouter, useSearchParams } from "next/navigation";
+import { useToast } from "@/store/useToast";
 
 export default function RegisterPage() {
   const router = useRouter();
+  const addToast = useToast((s) => s.addToast);
   const search = useSearchParams();
 
   const setUser = useAuth((state) => state.setUser);
@@ -32,8 +34,10 @@ export default function RegisterPage() {
       });
 
       setUser(res.data);
+      addToast("Registration successful!", "success");
       router.push("/dashboard");
     } catch (err: any) {
+      addToast(err?.message || "Registration failed", "error");
       setError(err.message || "Registration failed");
     }
   };

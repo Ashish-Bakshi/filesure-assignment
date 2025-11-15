@@ -4,9 +4,11 @@ import { useState } from "react";
 import { API } from "@/lib/api";
 import { useAuth } from "@/store/useAuth";
 import { useRouter } from "next/navigation";
+import { useToast } from "@/store/useToast";
 
 export default function LoginPage() {
   const router = useRouter();
+  const addToast = useToast((s) => s.addToast);
   const setUser = useAuth((state) => state.setUser);
 
   const [email, setEmail] = useState("");
@@ -21,8 +23,10 @@ export default function LoginPage() {
       const res = await API.post("/auth/login", { email, password });
 
       setUser(res.data);
+      addToast("Login successful!", "success");
       router.push("/dashboard");
     } catch (err: any) {
+      addToast(err?.message || "Login failed", "error");
       setError(err.message || "Login failed");
     }
   };

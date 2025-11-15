@@ -5,9 +5,11 @@ import { useRouter } from "next/navigation";
 import { useAuth } from "@/store/useAuth";
 import { useEffect } from "react";
 import { logout } from "@/lib/logout";
+import { useToast } from "@/store/useToast";
 
 export default function DashboardClient({ user }: { user: any }) {
   const router = useRouter();
+  const addToast = useToast((s) => s.addToast);
   const { loading, dashboard, error } = useDashboard();
 
   const authUser = useAuth((s) => s.user);
@@ -29,6 +31,7 @@ export default function DashboardClient({ user }: { user: any }) {
 
   const handleLogout = async () => {
     await logout();
+    addToast("Logged out!", "success");
     setUser(null);
     router.push("/login");
   };
@@ -58,7 +61,8 @@ export default function DashboardClient({ user }: { user: any }) {
 
   const copyReferralLink = async () => {
     await navigator.clipboard.writeText(referralLink);
-    alert("Referral link copied!");
+    addToast("Referral link copied!", "success");
+
   };
 
   const handlePurchase = async () => {
@@ -74,14 +78,14 @@ export default function DashboardClient({ user }: { user: any }) {
       );
 
       if (!res.ok) {
-        alert("Purchase failed");
+        addToast("Purchase failed", "error");
         return;
       }
 
-      alert("Purchase successful!");
+      addToast("Purchase successful!", "success");
       location.reload(); // Refresh dashboard
     } catch (err) {
-      alert("Purchase failed");
+      addToast("Purchase failed", "error");
     }
   };
 
