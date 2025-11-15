@@ -6,6 +6,7 @@ import connectDB from './lib/db';
 import authRoutes from './routes/auth.route';
 import purchaseRoutes from './routes/purchase.route';
 import dashboardRoutes from "./routes/dashboard.route";
+import meRoute from "./routes/auth.me.route";
 dotenv.config();
 
 const app = express();
@@ -20,6 +21,7 @@ app.use(cookieParser());
 app.use(express.json());
 
 app.use('/api/auth', authRoutes)
+app.use("/api/auth/me", meRoute);
 app.use('/api/purchase', purchaseRoutes)
 app.use('/api/dashboard', dashboardRoutes)
 
