@@ -1,5 +1,5 @@
 import DashboardClient  from "./dashboardClient";
-import { requireUser } from "@/app/_server/authGuard";
+import { requireUser } from "@/lib/authGuard";
 import { Suspense } from "react";
 
 export default async function DashboardPage() {
